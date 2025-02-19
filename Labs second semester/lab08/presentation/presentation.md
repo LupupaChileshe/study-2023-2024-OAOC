@@ -1,14 +1,14 @@
 ---
 ## Front matter
 lang: ru-RU
-title: Структура научной презентации
+title: Отчет по лабораторной работе №7
 subtitle: Простейший шаблон
 author:
-  - Кулябов Д. С.
+  - Чилеше . Л
 institute:
   - Российский университет дружбы народов, Москва, Россия
   - Объединённый институт ядерных исследований, Дубна, Россия
-date: 01 января 1970
+date: 27 января 2003
 
 ## i18n babel
 babel-lang: russian
@@ -35,176 +35,102 @@ header-includes:
 :::::::::::::: {.columns align=center}
 ::: {.column width="70%"}
 
-  * Кулябов Дмитрий Сергеевич
-  * д.ф.-м.н., профессор
-  * профессор кафедры прикладной информатики и теории вероятностей
+  * Лупупа Чилеше
+  * Студент
+  * Студент Группы НПИбд-03-23
   * Российский университет дружбы народов
-  * [kulyabov-ds@rudn.ru](mailto:kulyabov-ds@rudn.ru)
-  * <https://yamadharma.github.io/ru/>
-
 :::
 ::: {.column width="30%"}
 
-![](./image/kulyabov.jpg)
+
 
 :::
 ::::::::::::::
 
 # Вводная часть
 
-## Актуальность
+## Цель работы
 
-- Важно донести результаты своих исследований до окружающих
-- Научная презентация --- рабочий инструмент исследователя
-- Необходимо создавать презентацию быстро
-- Желательна минимизация усилий для создания презентации
+Получение навыков работы с планировщиками событий cron и at.
 
-## Объект и предмет исследования
+# Выполнение лабораторной работы 
 
-- Презентация как текст
-- Программное обеспечение для создания презентаций
-- Входные и выходные форматы презентаций
+## systemctl status crond -l
 
-## Цели и задачи
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab08/presentation/image/Screenshot from 2025-02-19 12-14-42.png)
 
-- Создать шаблон презентации в Markdown
-- Описать алгоритм создания выходных форматов презентаций
+## cat /etc/crontab
 
-## Материалы и методы
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab08/presentation/image/Screenshot from 2025-02-19 12-14-50.png)
 
-- Процессор `pandoc` для входного формата Markdown
-- Результирующие форматы
-	- `pdf`
-	- `html`
-- Автоматизация процесса создания: `Makefile`
+## crontab -l
 
-# Создание презентации
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab08/presentation/image/Screenshot from 2025-02-19 12-14-59.png)
 
-## Процессор `pandoc`
+## */1 * * * * logger This message is written from root cron
 
-- Pandoc: преобразователь текстовых файлов
-- Сайт: <https://pandoc.org/>
-- Репозиторий: <https://github.com/jgm/pandoc>
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab08/presentation/image/Screenshot from 2025-02-19 12-15-08.png)
 
-## Формат `pdf`
+## crontab -l
 
-- Использование LaTeX
-- Пакет для презентации: [beamer](https://ctan.org/pkg/beamer)
-- Тема оформления: `metropolis`
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab08/presentation/image/Screenshot from 2025-02-19 12-15-18.png)
 
-## Код для формата `pdf`
+## grep written /var/log/messages
 
-```yaml
-slide_level: 2
-aspectratio: 169
-section-titles: true
-theme: metropolis
-```
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab08/presentation/image/Screenshot from 2025-02-19 12-15-36.png)
 
-## Формат `html`
+## 0 */1 * * 1-5 logger This message is written from root cron
 
-- Используется фреймворк [reveal.js](https://revealjs.com/)
-- Используется [тема](https://revealjs.com/themes/) `beige`
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab08/presentation/image/Screenshot from 2025-02-19 12-15-08.png)
 
-## Код для формата `html`
+## crontab -l
 
-- Тема задаётся в файле `Makefile`
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab08/presentation/image/Screenshot from 2025-02-19 12-15-45.png)
 
-```make
-REVEALJS_THEME = beige 
-```
-# Результаты
+## cd /etc/cron.hourly
 
-## Получающиеся форматы
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab08/presentation/image/Screenshot from 2025-02-19 12-16-03.png)
 
-- Полученный `pdf`-файл можно демонстрировать в любой программе просмотра `pdf`
-- Полученный `html`-файл содержит в себе все ресурсы: изображения, css, скрипты
+## logger This message is written at $(date)
 
-# Элементы презентации
+Откройте файл eachhour для редактирования и пропишите в нём следующий
+ скрипт (запись сообщения в системный журнал):
+ #!/bin/sh
+ logger This message is written at $(date)
 
-## Актуальность
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab08/presentation/image/Screenshot from 2025-02-19 12-16-10.png)
 
-- Даёт понять, о чём пойдёт речь
-- Следует широко и кратко описать проблему
-- Мотивировать свое исследование
-- Сформулировать цели и задачи
-- Возможна формулировка ожидаемых результатов
+## chmod +x eachhour
 
-## Цели и задачи
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab08/presentation/image/Screenshot from 2025-02-19 12-16-19.png)
 
-- Не формулируйте более 1--2 целей исследования
+## 11 * * * * root logger This message is written from /etc/cron.d
 
-## Материалы и методы
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab08/presentation/image/Screenshot from 2025-02-19 12-16-28.png)
 
-- Представляйте данные качественно
-- Количественно, только если крайне необходимо
-- Излишние детали не нужны
+## grep written /var/log/messages
 
-## Содержание исследования
+Не выключая систему, через некоторое время (2–3 часа) просмотрите журнал
+системных событий: grep written /var/log/messages По журналу определите, был ли
+осуществлён запуск сценария eachhour в соответствии с заданным расписанием.
 
-- Предлагаемое решение задач исследования с обоснованием
-- Основные этапы работы
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab08/presentation/image/Screenshot from 2025-02-19 12-16-38.png)
 
-## Результаты
+# Планирование заданий с помощью at
 
-- Не нужны все результаты
-- Необходимы логические связки между слайдами
-- Необходимо показать понимание материала
+1. Запустите терминал и получите полномочия администратора:
+su –
+2. Проверьте, что служба atd загружена и включена:
+systemctl status atd
+3. Задайте выполнение команды logger message from at в 9:30 (или замените на
+любое другое время, когда вы работаете над этим упражнением). Для этого введите
+at 9:30 Затем введите
+logger message from at
+Используйте Ctrl + d , чтобы закрыть оболочку.
+4. Убедитесь, что задание действительно запланировано:
+atq
+С помощью команды grep 'from at' /var/log/messages посмотрите, появилось ли
+соответствующее сообщение в лог-файле в указанное вами время.
 
 
-## Итоговый слайд
-
-- Запоминается последняя фраза. © Штирлиц
-- Главное сообщение, которое вы хотите донести до слушателей
-- Избегайте использовать последний слайд вида *Спасибо за внимание*
-
-# Рекомендации
-
-## Принцип 10/20/30
-
-  - 10 слайдов
-  - 20 минут на доклад
-  - 30 кегль шрифта
-
-## Связь слайдов
-
-::: incremental
-
-- Один слайд --- одна мысль
-- Нельзя ссылаться на объекты, находящиеся на предыдущих слайдах (например, на формулы)
-- Каждый слайд должен иметь заголовок
-
-:::
-
-## Количество сущностей
-
-::: incremental
-
-- Человек может одновременно помнить $7 \pm 2$ элемента
-- При размещении информации на слайде старайтесь чтобы в сумме слайд содержал не более 5 элементов
-- Можно группировать элементы так, чтобы визуально было не более 5 групп
-
-:::
-
-## Общие рекомендации
-
-::: incremental
-
-- На слайд выносится та информация, которая без зрительной опоры воспринимается хуже
-- Слайды должны дополнять или обобщать содержание выступления или его частей, а не дублировать его
-- Информация на слайдах должна быть изложена кратко, чётко и хорошо структурирована
-- Слайд не должен быть перегружен графическими изображениями и текстом
-- Не злоупотребляйте анимацией и переходами
-
-:::
-
-## Представление данных
-
-::: incremental
-
-- Лучше представить в виде схемы
-- Менее оптимально представить в виде рисунка, графика, таблицы
-- Текст используется, если все предыдущие способы отображения информации не подошли
-
-:::
 

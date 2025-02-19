@@ -1,8 +1,8 @@
 ---
 ## Front matter
-title: "Шаблон отчёта по лабораторной работе"
-subtitle: "Простейший вариант"
-author: "Дмитрий Сергеевич Кулябов"
+title: "Отчет по лабораторной работе №9"
+subtitle: "Отчет о мониторинге и настройке системных журналов"
+author: "Лупупа Чилеше"
 
 ## Generic otions
 lang: ru-RU
@@ -68,52 +68,148 @@ header-includes:
 
 # Цель работы
 
-Здесь приводится формулировка цели лабораторной работы. Формулировки
-цели для каждой лабораторной работы приведены в методических
-указаниях.
+Цель данной лабораторной работы – изучение основ управления режимами SELinux,
+восстановления контекста безопасности файлов, настройки нестандартного
+расположения файлов веб-сервера и работы с переключателями SELinux. В ходе
+выполнения работы студенты научатся изменять режимы работы SELinux,
+корректировать контексты безопасности с помощью restorecon, настраивать SELinux
+для работы веб-сервера и управлять SELinux-переключателями.
 
-Цель данного шаблона --- максимально упростить подготовку отчётов по
-лабораторным работам.  Модифицируя данный шаблон, студенты смогут без
-труда подготовить отчёт по лабораторным работам, а также познакомиться
-с основными возможностями разметки Markdown.
-
-# Задание
-
-Здесь приводится описание задания в соответствии с рекомендациями
-методического пособия и выданным вариантом.
-
-# Теоретическое введение
-
-Здесь описываются теоретические аспекты, связанные с выполнением работы.
-
-Например, в табл. @tbl:std-dir приведено краткое описание стандартных каталогов Unix.
-
-: Описание некоторых каталогов файловой системы GNU Linux {#tbl:std-dir}
-
-| Имя каталога | Описание каталога                                                                                                          |
-|--------------|----------------------------------------------------------------------------------------------------------------------------|
-| `/`          | Корневая директория, содержащая всю файловую                                                                               |
-| `/bin `      | Основные системные утилиты, необходимые как в однопользовательском режиме, так и при обычной работе всем пользователям     |
-| `/etc`       | Общесистемные конфигурационные файлы и файлы конфигурации установленных программ                                           |
-| `/home`      | Содержит домашние директории пользователей, которые, в свою очередь, содержат персональные настройки и данные пользователя |
-| `/media`     | Точки монтирования для сменных носителей                                                                                   |
-| `/root`      | Домашняя директория пользователя  `root`                                                                                   |
-| `/tmp`       | Временные файлы                                                                                                            |
-| `/usr`       | Вторичная иерархия для данных пользователя                                                                                 |
-
-Более подробно об Unix см. в [@gnu-doc:bash;@newham:2005:bash;@zarrelli:2017:bash;@robbins:2013:bash;@tannenbaum:arch-pc:ru;@tannenbaum:modern-os:ru].
 
 # Выполнение лабораторной работы
 
-Описываются проведённые действия, в качестве иллюстрации даётся ссылка на иллюстрацию (рис. @fig:001).
+## Управление режимами SELinux
+1. Запуск терминала и получение прав администратора
+   Выполнена команда su.
 
-![Название рисунка](image/placeimg_800_600_tech.jpg){#fig:001 width=70%}
+2. Просмотр состояния SELinux
+   Команда sestatus -v вывела информацию:
+  
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/report/image/Screenshot from 2025-02-19 13-06-35.png)  
+   
+- SELinux status: показывает, включена ли SELinux.
+- Current mode: текущий режим (Enforcing, Permissive, Disabled).
+- Policy version: используемая политика безопасности.
+- Loaded policy: загруженный набор правил безопасности.
+- Mode from config file: режим, установленный в конфигурации
 
-# Выводы
+3. Определение текущего режима работы
+   Команда getenforce показала Enforcing (принудительный режим).
 
-Здесь кратко описываются итоги проделанной работы.
+4. Изменение режима на Permissive
 
-# Список литературы{.unnumbered}
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/report/image/Screenshot from 2025-02-19 13-06-54.png)
 
-::: {#refs}
-:::
+setenforce 0 изменил режим на Permissive.
+getenforce подтвердил изменение.
+
+5. Отключение SELinux через конфигурационный файл
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/report/image/Screenshot from 2025-02-19 13-07-03.png)
+
+В файле /etc/sysconfig/selinux установлено SELINUX=disabled.
+После перезагрузки система подтвердила отключение (getenforce вернул Disabled).
+
+6. Попытка включения SELinux без перезагрузки
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/report/image/Screenshot from 2025-02-19 13-07-22.png)
+
+ setenforce 1 не сработал, так как отключенный SELinux требует перезагрузки.
+
+7. Возвращение режима Enforcing
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/report/image/Screenshot from 2025-02-19 13-07-34.png)
+
+В файле /etc/sysconfig/selinux установлено SELINUX=enforcing.
+После перезагрузки система запустилась в режиме Enforcing, возможно с
+предупреждением о необходимости восстановления меток.
+
+
+# Использование restorecon для восстановления контекста безопасности
+
+1. Просмотр контекста файла /etc/hosts
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/report/image/Screenshot from 2025-02-19 13-07-49.png)
+
+ls -Z /etc/hosts показал net_conf_t.
+
+2. Копирование файла и изменение контекста
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/report/image/Screenshot from 2025-02-19 13-07-57.png)
+
+cp /etc/hosts ~/ создал копию с контекстом admin_home_t.
+
+3. Перемещение файла обратно и проверка контекста
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/report/image/Screenshot from 2025-02-19 13-08-05.png)
+
+mv ~/hosts /etc сохранило admin_home_t.
+
+4. Исправление контекста
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/report/image/Screenshot from 2025-02-19 13-08-14.png)
+
+restorecon -v /etc/hosts восстановил net_conf_t.
+
+5. Массовое исправление контекста
+
+touch /.autorelabel и перезагрузка инициировали перемаркировку файловой системы
+
+# Настройка контекста для нестандартного расположения веб-файлов
+
+1. Установка Apache и текстового браузера 
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/report/image/Screenshot from 2025-02-19 13-08-32.png)
+
+  dnf -y install httpd lynx.
+
+2. Создание каталога и конфигурация Apache
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/report/image/Screenshot from 2025-02-19 13-08-43.png)
+
+   mkdir /web, добавлен index.html.
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/report/image/Screenshot from 2025-02-19 13-08-50.png)
+
+  В /etc/httpd/conf/httpd.conf изменен DocumentRoot на /web.
+
+3. Запуск Apache и тестирование через lynx
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/report/image/Screenshot from 2025-02-19 13-09-01.png)
+
+  systemctl start httpd, но страница по умолчанию не отображала новый контент.
+
+4. Изменение контекста безопасности
+
+  semanage fcontext -a -t httpd_sys_content_t "/web(/.*)?".
+  restorecon -R -v /web восстановил контекст.
+
+5.Повторное тестирование через lynx
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/report/image/Screenshot from 2025-02-19 13-09-20.png)
+
+  После перезагрузки веб-страница Welcome to my web-server отобразилась успешно.
+ 
+# Работа с переключателями SELinux
+
+1. Просмотр переключателей для FTP
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/report/image/Screenshot from 2025-02-19 13-09-31.png)
+
+ getsebool -a | grep ftp показал ftpd_anon_write off.
+
+2. Просмотр переключателей с пояснениями
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/report/image/Screenshot from 2025-02-19 13-09-42.png)
+
+  semanage boolean -l | grep ftpd_anon подтвердил временное изменение.
+
+3. Установка постоянного значения
+    setsebool -P ftpd_anon_write on сохранил изменение после перезагрузки.
+4. Проверка состояния после перезагрузки
+    semanage boolean -l | grep ftpd_anon подтвердил on для ftpd_anon_write.
+
+
+
+
+

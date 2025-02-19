@@ -1,14 +1,14 @@
 ---
 ## Front matter
 lang: ru-RU
-title: Структура научной презентации
-subtitle: Простейший шаблон
+title: Отчет по лабораторной работе №9
+subtitle: Отчет о мониторинге и настройке системных журналов
 author:
-  - Кулябов Д. С.
+  - Чилеше . Л
 institute:
   - Российский университет дружбы народов, Москва, Россия
   - Объединённый институт ядерных исследований, Дубна, Россия
-date: 01 января 1970
+date: 27 января 2003
 
 ## i18n babel
 babel-lang: russian
@@ -35,176 +35,180 @@ header-includes:
 :::::::::::::: {.columns align=center}
 ::: {.column width="70%"}
 
-  * Кулябов Дмитрий Сергеевич
-  * д.ф.-м.н., профессор
-  * профессор кафедры прикладной информатики и теории вероятностей
+  * Лупупа Чилеше
+  * Студент
+  * Студент Группы НПИбд-03-23
   * Российский университет дружбы народов
-  * [kulyabov-ds@rudn.ru](mailto:kulyabov-ds@rudn.ru)
-  * <https://yamadharma.github.io/ru/>
 
 :::
 ::: {.column width="30%"}
 
-![](./image/kulyabov.jpg)
+
 
 :::
 ::::::::::::::
 
 # Вводная часть
 
-## Актуальность
+## Цель работ
 
-- Важно донести результаты своих исследований до окружающих
-- Научная презентация --- рабочий инструмент исследователя
-- Необходимо создавать презентацию быстро
-- Желательна минимизация усилий для создания презентации
+Цель данной лабораторной работы – изучение основ управления режимами SELinux,
+восстановления контекста безопасности файлов, настройки нестандартного
+расположения файлов веб-сервера и работы с переключателями SELinux. В ходе
+выполнения работы студенты научатся изменять режимы работы SELinux,
+корректировать контексты безопасности с помощью restorecon, настраивать SELinux
+для работы веб-сервера и управлять SELinux-переключателями.
 
-## Объект и предмет исследования
+# Управление режимами SELinux
 
-- Презентация как текст
-- Программное обеспечение для создания презентаций
-- Входные и выходные форматы презентаций
+## Просмотр состояния SELinux
 
-## Цели и задачи
+Команда sestatus -v вывела информацию:
 
-- Создать шаблон презентации в Markdown
-- Описать алгоритм создания выходных форматов презентаций
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/presentation/image/Screenshot from 2025-02-19 13-06-35.png)
 
-## Материалы и методы
+SELinux status: показывает, включена ли SELinux.
+Current mode: текущий режим (Enforcing, Permissive, Disabled).
+Policy version: используемая политика безопасности.
+Loaded policy: загруженный набор правил безопасности.
+Mode from config file: режим, установленный в конфигурации
 
-- Процессор `pandoc` для входного формата Markdown
-- Результирующие форматы
-	- `pdf`
-	- `html`
-- Автоматизация процесса создания: `Makefile`
+## Определение текущего режима работы
 
-# Создание презентации
+Команда getenforce показала Enforcing (принудительный режим).
 
-## Процессор `pandoc`
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/presentation/image/Screenshot from 2025-02-19 13-06-46.png)
 
-- Pandoc: преобразователь текстовых файлов
-- Сайт: <https://pandoc.org/>
-- Репозиторий: <https://github.com/jgm/pandoc>
+## Изменение режима на Permissive
 
-## Формат `pdf`
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/presentation/image/Screenshot from 2025-02-19 13-06-54.png)
 
-- Использование LaTeX
-- Пакет для презентации: [beamer](https://ctan.org/pkg/beamer)
-- Тема оформления: `metropolis`
-
-## Код для формата `pdf`
-
-```yaml
-slide_level: 2
-aspectratio: 169
-section-titles: true
-theme: metropolis
-```
-
-## Формат `html`
-
-- Используется фреймворк [reveal.js](https://revealjs.com/)
-- Используется [тема](https://revealjs.com/themes/) `beige`
-
-## Код для формата `html`
-
-- Тема задаётся в файле `Makefile`
-
-```make
-REVEALJS_THEME = beige 
-```
-# Результаты
-
-## Получающиеся форматы
-
-- Полученный `pdf`-файл можно демонстрировать в любой программе просмотра `pdf`
-- Полученный `html`-файл содержит в себе все ресурсы: изображения, css, скрипты
-
-# Элементы презентации
-
-## Актуальность
-
-- Даёт понять, о чём пойдёт речь
-- Следует широко и кратко описать проблему
-- Мотивировать свое исследование
-- Сформулировать цели и задачи
-- Возможна формулировка ожидаемых результатов
-
-## Цели и задачи
-
-- Не формулируйте более 1--2 целей исследования
-
-## Материалы и методы
-
-- Представляйте данные качественно
-- Количественно, только если крайне необходимо
-- Излишние детали не нужны
-
-## Содержание исследования
-
-- Предлагаемое решение задач исследования с обоснованием
-- Основные этапы работы
-
-## Результаты
-
-- Не нужны все результаты
-- Необходимы логические связки между слайдами
-- Необходимо показать понимание материала
+setenforce 0 изменил режим на Permissive.
+getenforce подтвердил изменение.
 
 
-## Итоговый слайд
+## Отключение SELinux через конфигурационный файл
 
-- Запоминается последняя фраза. © Штирлиц
-- Главное сообщение, которое вы хотите донести до слушателей
-- Избегайте использовать последний слайд вида *Спасибо за внимание*
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/presentation/image/Screenshot from 2025-02-19 13-07-03.png)
 
-# Рекомендации
+В файле /etc/sysconfig/selinux установлено SELINUX=disabled.
+После перезагрузки система подтвердила отключение (getenforce вернул Disabled).
 
-## Принцип 10/20/30
+## Попытка включения SELinux без перезагрузки
 
-  - 10 слайдов
-  - 20 минут на доклад
-  - 30 кегль шрифта
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/presentation/image/Screenshot from 2025-02-19 13-07-22.png)
 
-## Связь слайдов
+setenforce 1 не сработал, так как отключенный SELinux требует перезагрузки.
 
-::: incremental
+## Возвращение режима Enforcing
 
-- Один слайд --- одна мысль
-- Нельзя ссылаться на объекты, находящиеся на предыдущих слайдах (например, на формулы)
-- Каждый слайд должен иметь заголовок
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/presentation/image/Screenshot from 2025-02-19 13-07-34.png)
 
-:::
+В файле /etc/sysconfig/selinux установлено SELINUX=enforcing.
+После перезагрузки система запустилась в режиме Enforcing, возможно с
+предупреждением о необходимости восстановления меток.
 
-## Количество сущностей
+# Использование restorecon для восстановления контекста безопасности
 
-::: incremental
 
-- Человек может одновременно помнить $7 \pm 2$ элемента
-- При размещении информации на слайде старайтесь чтобы в сумме слайд содержал не более 5 элементов
-- Можно группировать элементы так, чтобы визуально было не более 5 групп
 
-:::
+## Просмотр контекста файла /etc/hosts
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/presentation/image/Screenshot from 2025-02-19 13-07-49.png)
+
+ls -Z /etc/hosts показал net_conf_t.
+
+
+## Копирование файла и изменение контекста
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/presentation/image/Screenshot from 2025-02-19 13-07-57.png)
+
+cp /etc/hosts ~/ создал копию с контекстом admin_home_t.
+
+
+## Перемещение файла обратно и проверка контекста
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/presentation/image/Screenshot from 2025-02-19 13-08-05.png)
+
+mv ~/hosts /etc сохранило admin_home_t.
+
+## Исправление контекста
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/presentation/image/Screenshot from 2025-02-19 13-08-14.png)
+
+restorecon -v /etc/hosts восстановил net_conf_t.
+
+
+## Массовое исправление контекста
+
+touch /.autorelabel и перезагрузка инициировали перемаркировку файловой системы
+
+# Настройка контекста для нестандартного расположения веб-файлов
+
+
+
+## Установка Apache и текстового браузера
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/presentation/image/Screenshot from 2025-02-19 13-08-32.png)
+
+dnf -y install httpd lynx.
+
+## Создание каталога и конфигурация Apache
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/presentation/image/Screenshot from 2025-02-19 13-08-43.png)
+
+mkdir /web, добавлен index.html.
+
+## В /etc/httpd/conf/httpd.conf изменен DocumentRoot на /web.
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/presentation/image/Screenshot from 2025-02-19 13-08-50.png)
+
+
+## Запуск Apache и тестирование через lynx
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/presentation/image/Screenshot from 2025-02-19 13-09-01.png)
+
+systemctl start httpd, но страница по умолчанию не отображала новый контент.
+
+## Изменение контекста безопасности
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/presentation/image/Screenshot from 2025-02-19 13-09-09.png)
+
+semanage fcontext -a -t httpd_sys_content_t "/web(/.*)?".
+restorecon -R -v /web восстановил контекст.
+
+
+## Повторное тестирование через lynx
+
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/presentation/image/Screenshot from 2025-02-19 13-09-20.png)
+
+После перезагрузки веб-страница Welcome to my web-server отобразилась успешно.
 
 ## Общие рекомендации
 
-::: incremental
+# Работа с переключателями SELinux
 
-- На слайд выносится та информация, которая без зрительной опоры воспринимается хуже
-- Слайды должны дополнять или обобщать содержание выступления или его частей, а не дублировать его
-- Информация на слайдах должна быть изложена кратко, чётко и хорошо структурирована
-- Слайд не должен быть перегружен графическими изображениями и текстом
-- Не злоупотребляйте анимацией и переходами
+## Просмотр переключателей для FTP
 
-:::
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/presentation/image/Screenshot from 2025-02-19 13-09-31.png)
 
-## Представление данных
+getsebool -a | grep ftp показал ftpd_anon_write off.
 
-::: incremental
+## Просмотр переключателей с пояснениями
 
-- Лучше представить в виде схемы
-- Менее оптимально представить в виде рисунка, графика, таблицы
-- Текст используется, если все предыдущие способы отображения информации не подошли
+![](/home/lupupachileshe/work/study2/2023-2024/OAOC/study_2023_2024_oaoc/Labs second semester/lab09/presentation/image/Screenshot from 2025-02-19 13-09-42.png)
 
-:::
+semanage boolean -l | grep ftpd_anon подтвердил временное изменение.
+
+## Установка постоянного значения
+  setsebool -P ftpd_anon_write on сохранил изменение после перезагрузки.
+  
+## Проверка состояния после перезагрузки
+  semanage boolean -l | grep ftpd_anon подтвердил on для ftpd_anon_write.
+
+
+
+
+
+
 
